@@ -7,18 +7,27 @@ from signal import pause
 from time import sleep
 
 winner=LED(26)
-button=Button(18) #i hate bouncy buttons and i cant fix that grrr
+blue=Button(18) #i hate bouncy buttons and i cant fix that grrr
+white=Button(24) #automatic win hehehehehehehebhehhehhe
 
 tm = tm1637.TM1637(clk=27, dio=22)
 clear = [0,0,0,0]
 tm.write(clear)
 tm.show("spin")
 
-def spin(): # THIS GAME IS RIGGED
+
+
+def spin():
     a=str(random.randint(0,9))
     b=str(random.randint(0,9))
     r=random.randint(1,4) # 1-4 chooses the location of different number
     s=0
+
+    if white.is_pressed: # winner
+        d=1
+    else: # normal
+        d=0
+
     while s<35: #spin animation thing or idk.
         sleep(0.02)
         s+=1
@@ -35,7 +44,8 @@ def spin(): # THIS GAME IS RIGGED
         tm.show(a+a+b+a)
     if r==4:
         tm.show(a+a+a+b)
-    if a==b: #OMG YOU WON
+    if a==b or d==1: # a==b is winner, d==1 forces winner
+        tm.show(a+a+a+a)
         print("you won!!!")
         w=0
         while w<5:
@@ -51,10 +61,10 @@ def spin(): # THIS GAME IS RIGGED
     sleep(1) #cooldown before spinning again
     retry
     
-button.when_pressed = spin
+blue.when_pressed = spin
 
 def retry(): # allows retry without needing to rerun code
-    button.when_pressed = spin
+    blue.when_pressed = spin
 
 
 pause()
